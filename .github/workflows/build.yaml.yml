@@ -1,0 +1,29 @@
+name: build
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ "ubuntu-22.04", "macos-14" ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Busybox
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        run: |
+          sudo ./build_busybox.sh

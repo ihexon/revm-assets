@@ -1,0 +1,27 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Build artifacts
+busybox-*/
+*.tar.bz2
+*.tar.gz
+*.zip
+
+# Compiled binaries
+*.o
+*.a
+*.so
+*.dylib
+_install/
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
