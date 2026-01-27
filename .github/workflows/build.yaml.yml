@@ -25,5 +25,6 @@ jobs:
 
       - name: Build Busybox
         if: ${{ matrix.os == 'ubuntu-22.04' }}
+        shell: bash
         run: |
-          sudo ./build_busybox.sh
+          ./build_busybox.sh
