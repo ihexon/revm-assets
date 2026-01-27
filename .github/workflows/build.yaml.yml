@@ -11,30 +11,57 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build_krun_krunfw_darwin:
     strategy:
       fail-fast: true
       matrix:
-        os: ["ubuntu-22.04", "macos-14"]
-
+        os: ["macos-14"]
     runs-on: ${{ matrix.os }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Busybox
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
+      - name: Build libkrun
+        shell: bash
+        run: |
+          ./build_libkrun.sh
+
+  build_krun_krunfw_linux:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ["ubuntu-22.04"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build libkrun
+        shell: bash
+        run: |
+          ./build_libkrun.sh
+
+      - name: Build libkrunfw
+        shell: bash
+        run: |
+          ./build_libkrunfw.sh
+
+  build_linux_tools:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: ["ubuntu-22.04"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build static Busybox
         shell: bash
         run: |
           ./build_busybox.sh
 
-      - name: Build Dropbear
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
+      - name: Build static Dropbear
         shell: sh
         run: |
           docker run --rm -v "$(pwd):$(pwd)" alpine:edge sh -c "$(pwd)/build_dropbear.sh"
-
-      - name: Build libkrun for macos-14
-        if: ${{ matrix.os == 'macos-14' }}
-        run: ./build_libkrun.sh
