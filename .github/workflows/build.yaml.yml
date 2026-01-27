@@ -28,3 +28,9 @@ jobs:
         shell: bash
         run: |
           ./build_busybox.sh
+
+      - name: Build Dropbear
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        shell: sh
+        run: |
+          docker run --rm -v "$(pwd):$(pwd)" alpine:edge sh -c "$(pwd)/build_dropbear.sh"
