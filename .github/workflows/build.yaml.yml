@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
   workflow_dispatch:
 
 permissions:
@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ "ubuntu-22.04", "macos-14" ]
+        os: ["ubuntu-22.04", "macos-14"]
 
     runs-on: ${{ matrix.os }}
 
@@ -34,3 +34,7 @@ jobs:
         shell: sh
         run: |
           docker run --rm -v "$(pwd):$(pwd)" alpine:edge sh -c "$(pwd)/build_dropbear.sh"
+
+      - name: Build libkrun for macos-14
+        if: ${{ matrix.os == 'macos-14' }}
+        run: ./build_libkrun.sh
