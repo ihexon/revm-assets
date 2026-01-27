@@ -13,8 +13,8 @@ build_libkrun_dawrin() {
 	brew tap slp/krun
 	brew install virglrenderer lld
 	brew info virglrenderer
-	make GPU=1 BLK=1 NET=1
-
+	PREFIX="$HOME/libkrun_builded" make GPU=1 BLK=1 NET=1
+	PREFIX="$HOME/libkrun_builded" make GPU=1 BLK=1 NET=1 install
 }
 
 build_libkrun_linux() {
@@ -23,7 +23,8 @@ build_libkrun_linux() {
 
 	sudo apt update
 	sudo apt install llvm clang libclang-dev
-	make BLK=1 NET=1
+	PREFIX="$HOME/libkrun_builded" make BLK=1 NET=1
+	PREFIX="$HOME/libkrun_builded" make BLK=1 NET=1 install
 }
 
 build_libkrun() {
@@ -45,4 +46,3 @@ repack_libkrun_source(){
 
 build_libkrun
 repack_libkrun_source
-

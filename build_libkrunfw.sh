@@ -13,7 +13,8 @@ build_libkrunfw_linux() {
 	git clone https://github.com/containers/libkrunfw.git
 
 	cd libkrunfw
-	make -j8
+	PREFIX="$HOME/libkrunfw_builded" make -j8
+	PREFIX="$HOME/libkrunfw_builded" make -j8 install
 }
 
 build_libkrunfw_darwin() {
@@ -24,7 +25,8 @@ build_libkrunfw_darwin() {
 		echo "kernel.c not find, please build kernel.c first"
 		exit 100
 	fi
-	make -j8
+	PREFIX="$HOME/libkrunfw_builded" make -j8
+	PREFIX="$HOME/libkrunfw_builded" make -j8 install
 }
 
 build_libkrunfw() {
@@ -37,9 +39,9 @@ build_libkrunfw() {
 	fi
 }
 
-repack_libkrunfw_source(){
-				cd "$pwd_c"
-				tar --zstd -cf libkrunfw-src.tar.zst libkrunfw
+repack_libkrunfw_source() {
+	cd "$pwd_c"
+	tar --zstd -cf libkrunfw-src.tar.zst libkrunfw
 }
 
 build_libkrunfw
