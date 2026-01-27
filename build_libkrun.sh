@@ -2,23 +2,47 @@
 set -xe
 PLT=$(uname)
 ARCH=$(uname -m)
+pwd_c="$(pwd)"
 
 git clone https://github.com/containers/libkrun.git
-cd libkrun
 
-# For macos arm64 variant
-if [[ "$PLT" == "Darwin" ]]; then
+build_libkrun_dawrin() {
+	cd "$pwd_c"
+	cd libkrun
+
 	brew tap slp/krun
 	brew install virglrenderer lld
 	brew info virglrenderer
 	make GPU=1 BLK=1 NET=1
-fi
 
-# For linux variant, disable GPU feature
-if [[ "$PLT" == "Linux" ]]; then
+}
+
+build_libkrun_linux() {
+	cd "$pwd_c"
+	cd libkrun
+
 	sudo apt update
 	sudo apt install llvm clang libclang-dev
 	make BLK=1 NET=1
-fi
+}
 
-tar --zstd -cvf "libkrun-$PLT-$ARCH.tar" $(find . -name "libkrun*.so.*")
+build_libkrun() {
+	if [[ "$PLT" == "Linux" ]]; then
+		build_libkrun_linux
+	fi
+
+	if [[ "$PLT" == "Darwin" ]]; then
+		build_libkrun_dawrin
+	fi
+}
+
+
+repack_libkrun_source(){
+	cd "$pwd_c"
+	tar --zstd -cf libkrun-src.tar libkrun/
+}
+
+
+build_libkrun
+repack_libkrun_source
+

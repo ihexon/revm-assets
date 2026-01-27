@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   build_krun_krunfw_darwin:
+    needs: build_krun_krunfw_linux
     strategy:
       fail-fast: true
       matrix:
@@ -25,6 +26,17 @@ jobs:
         shell: bash
         run: |
           ./build_libkrun.sh
+
+      - name: reuse libkrunfw-src tree
+        uses: actions/download-artifact@v5
+        with:
+          name: libkrunfw-src
+
+      - name: Build libkrunfw
+        shell: bash
+        run: |
+          tar -xf libkrunfw-src.tar.zst -C "$(pwd)"
+          ./build_libkrunfw.sh
 
   build_krun_krunfw_linux:
     strategy:
@@ -45,6 +57,15 @@ jobs:
         shell: bash
         run: |
           ./build_libkrunfw.sh
+
+      - name: upload libkrunfw
+        uses: actions/upload-artifact@v4
+        with:
+          name: libkrunfw-src
+          path: libkrunfw-src.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
 
   build_linux_tools:
     strategy:
