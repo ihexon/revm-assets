@@ -10,13 +10,13 @@ export PREFIX="$SRC_DIR/_install_"
 
 export RELEASE_TAR="e2fsprogs-$PLT-$ARCH.tar.zst"
 
-git clone https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git "$SRC_DIR" -b v1.47.3
-
 build_e2fsprogs_darwin() {
+    git clone https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git "$SRC_DIR" -b v1.47.3
+
     cd "$SRC_DIR"
     ./configure --prefix="$PREFIX" \
         --with-udev-rules-dir="$PREFIX/etc/udev" \
-        --with-crond-dir=="$PREFIX/etc/crond" \
+        --with-crond-dir="$PREFIX/etc/crond" \
         --enable-symlink-build \
         --with-systemd-unit-dir="$PREFIX/etc/systemd"
     make -j8
@@ -24,10 +24,18 @@ build_e2fsprogs_darwin() {
 }
 
 build_e2fsprogs_linux() {
+    apk add gcc musl-dev make libarchive e2fsprogs-static linux-headers git tar zstd
+
+    git clone https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git "$SRC_DIR" -b v1.47.3
+
     cd "$SRC_DIR"
-    ./configure --prefix="$PREFIX" \
+
+    CC=gcc \
+        CFLAGS="-O2 -fno-pie -fno-plt" \
+        CXXFLAGS="-O2 -fno-pie -fno-plt" \
+        LDFLAGS="-static -no-pie" ./configure --prefix="$PREFIX" \
         --with-udev-rules-dir="$PREFIX/etc/udev" \
-        --with-crond-dir=="$PREFIX/etc/crond" \
+        --with-crond-dir="$PREFIX/etc/crond" \
         --enable-symlink-build \
         --with-systemd-unit-dir="$PREFIX/etc/systemd"
     make -j8

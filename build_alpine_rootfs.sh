@@ -13,15 +13,19 @@ export RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
 
 build_alpine_rootfs() {
     cd "$WORKSPACE"
-    docker run --name="$PKG_NAME" alpine:edge sh -c "apk update && apk add podman"
+    docker run --name="$PKG_NAME" alpine:3.23.3 sh -c "apk update && apk add podman"
 }
 
 release() {
     cd "$WORKSPACE"
-    docker export "$PKG_NAME" | zstd -T0 -19 -o "$RELEASE_TAR"
+    mkdir -p "$PREFIX"
+    docker export "$PKG_NAME" | tar -x -C "$PREFIX"
+    install -D -m 0644 "$WORKSPACE/containers.conf" "$PREFIX/etc/containers/containers.conf"
+    tar --zstd -cvf "$RELEASE_TAR" -C "$PREFIX" .
+    docker rm "$PKG_NAME"
 }
 
-build(){
+build() {
     build_alpine_rootfs
 }
 
