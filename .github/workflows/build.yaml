@@ -169,8 +169,9 @@ jobs:
         with:
           path: artifacts
           merge-multiple: true
-
-      - run: ls -la artifacts/
+      - run: |
+          rm artifacts/libkrunfw-src-Linux-aarch64.tar.zst
+          ls -la artifacts/
 
       - uses: softprops/action-gh-release@v2
         with:

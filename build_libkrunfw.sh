@@ -53,6 +53,7 @@ build_libkrunfw_darwin() {
     fi
 
     make PREFIX="$PREFIX" -j8
+    rm -rf "$PREFIX"
     make PREFIX="$PREFIX" -j8 install
 }
 
