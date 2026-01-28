@@ -128,6 +128,30 @@ jobs:
           compression-level: 0
           overwrite: true
 
+  build_darwin_tools:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ "macos-14" ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build e2fsprogs
+        run: |
+          ./build_e2fsprogs.sh
+
+      - name: upload e2fsprogs-Darwin-arm64.tar.zst
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2fsprogs-Darwin-arm64.tar.zst
+          path: e2fsprogs-Darwin-arm64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+
   build_linux_tools:
     strategy:
       fail-fast: true
@@ -147,3 +171,43 @@ jobs:
         shell: sh
         run: |
           docker run --rm --workdir "$(pwd)" -v "$(pwd):$(pwd)" alpine:edge sh -c "$(pwd)/build_dropbear.sh"
+
+      - name: upload busybox-Linux-x86_64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        with:
+          name: busybox-Linux-x86_64.tar.zst
+          path: busybox-Linux-x86_64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+      - name: upload busybox-Linux-aarch64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
+        with:
+          name: busybox-Linux-aarch64.tar.zst
+          path: busybox-Linux-aarch64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+      - name: upload dropbear-Linux-x86_64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        with:
+          name: dropbear-Linux-x86_64.tar.zst
+          path: dropbear-Linux-x86_64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+      - name: upload dropbear-Linux-aarch64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
+        with:
+          name: dropbear-Linux-aarch64.tar.zst
+          path: dropbear-Linux-aarch64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
