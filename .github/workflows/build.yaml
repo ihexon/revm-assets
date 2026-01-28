@@ -138,6 +138,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: ./build_busybox.sh
       - run: docker run --rm --workdir "$(pwd)" -v "$(pwd):$(pwd)" alpine:edge sh -c "$(pwd)/build_dropbear.sh"
+      - run: ./build_e2fsprogs.sh
 
       - uses: actions/upload-artifact@v4
         with:
@@ -151,6 +152,14 @@ jobs:
         with:
           name: dropbear-Linux-${{ matrix.arch }}.tar.zst
           path: dropbear-Linux-${{ matrix.arch }}.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e2fsprogs-Linux-${{ matrix.arch }}.tar.zst
+          path: e2fsprogs-Linux-${{ matrix.arch }}.tar.zst
           retention-days: 1
           compression-level: 0
           overwrite: true
@@ -177,3 +186,4 @@ jobs:
         with:
           files: artifacts/*.tar.zst
           generate_release_notes: true
+          make_latest: true
