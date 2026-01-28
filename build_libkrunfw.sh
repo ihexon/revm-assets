@@ -21,8 +21,15 @@ build_libkrunfw_linux() {
     cp -av "$WORKSPACE/config-libkrunfw_aarch64" "$LIBKRUNFW_SRC/config-libkrunfw_aarch64"
     cp -av "$WORKSPACE/config-libkrunfw_x86_64" "$LIBKRUNFW_SRC/config-libkrunfw_x86_64"
 
-    make PREFIX="$PREFIX" -j8
-    make PREFIX="$PREFIX" -j8 install
+    if [[ "$ARCH" == "aarch64" ]]; then
+        # set ARCH to arm64 rather then aarch64
+        local ARM64="arm64"
+        ARCH=$ARM64 make PREFIX="$PREFIX" -j8
+        ARCH=$ARM64 make PREFIX="$PREFIX" -j8 install
+    else
+        make PREFIX="$PREFIX" -j8
+        make PREFIX="$PREFIX" -j8 install
+    fi
 }
 
 build_libkrunfw_darwin() {
