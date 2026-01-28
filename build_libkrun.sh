@@ -9,28 +9,28 @@ export WORKSPACE="$(pwd)"
 export LIBKRUN_SRC="$WORKSPACE/libkrun"
 export PREFIX="$LIBKRUN_SRC/_install_"
 
-export SRC_ARCHIVE="libkrun-src.tar"
+export SRC_ARCHIVE="libkrun-src-$PLT-$ARCH.tar.zst"
 
 
 git clone https://github.com/containers/libkrun.git "$LIBKRUN_SRC"
 
-build_libkrun_dawrin() {
+build_libkrun_darwin() {
     brew tap slp/krun
     brew install virglrenderer lld
     brew info virglrenderer
 
     cd "$LIBKRUN_SRC"
-    make GPU=1 BLK=1 NET=1
-    make GPU=1 BLK=1 NET=1 install
+    make PREFIX="$PREFIX" GPU=1 BLK=1 NET=1
+    make PREFIX="$PREFIX" GPU=1 BLK=1 NET=1 install
 }
 
 build_libkrun_linux() {
     sudo apt update
-    sudo apt install llvm clang libclang-dev
+    sudo apt install -y llvm clang libclang-dev
 
     cd "$LIBKRUN_SRC"
-    make BLK=1 NET=1
-    make BLK=1 NET=1 install
+    make PREFIX="$PREFIX" BLK=1 NET=1
+    make PREFIX="$PREFIX" BLK=1 NET=1 install
 }
 
 build_libkrun() {
@@ -41,7 +41,7 @@ build_libkrun() {
     fi
 
     if [[ "$PLT" == "Darwin" ]]; then
-        build_libkrun_dawrin
+        build_libkrun_darwin
     fi
 }
 

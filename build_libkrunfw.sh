@@ -8,7 +8,7 @@ export WORKSPACE="$(pwd)"
 export LIBKRUNFW_SRC="$WORKSPACE/libkrunfw"
 export PREFIX="$LIBKRUNFW_SRC/_install_"
 
-export SRC_ARCHIVE="libkrunfw-src.tar.zst"
+export SRC_ARCHIVE="libkrunfw-src-$PLT-$ARCH.tar.zst"
 
 build_libkrunfw_linux() {
     sudo apt-get update
@@ -19,12 +19,22 @@ build_libkrunfw_linux() {
     cd "$LIBKRUNFW_SRC"
 
     cp -av "$WORKSPACE/config-libkrunfw_aarch64" "$LIBKRUNFW_SRC/config-libkrunfw_aarch64"
+    cp -av "$WORKSPACE/config-libkrunfw_x86_64" "$LIBKRUNFW_SRC/config-libkrunfw_x86_64"
 
-    make -j8
-    make -j8 install
+    make PREFIX="$PREFIX" -j8
+    make PREFIX="$PREFIX" -j8 install
 }
 
 build_libkrunfw_darwin() {
+    cd "$WORKSPACE"
+
+    if [[ ! -f libkrunfw-src-Linux-aarch64.tar.zst ]]; then
+        echo "prebuild libkrunfw-src-Linux-aarch64.tar.zst not find, please download it"
+        exit 100
+    fi
+
+    tar --zstd -xf libkrunfw-src-Linux-aarch64.tar.zst
+
     cd "$LIBKRUNFW_SRC"
 
     if [[ ! -f kernel.c ]]; then
@@ -32,8 +42,8 @@ build_libkrunfw_darwin() {
         exit 100
     fi
 
-    make -j8
-    make -j8 install
+    make PREFIX="$PREFIX" -j8
+    make PREFIX="$PREFIX" -j8 install
 }
 
 build_libkrunfw() {
@@ -49,10 +59,6 @@ build_libkrunfw() {
 repack_libkrunfw_source() {
     cd "$WORKSPACE"
     tar --zstd -cf "$SRC_ARCHIVE" -C "$(dirname "$LIBKRUNFW_SRC")" "$(basename "$LIBKRUNFW_SRC")"
-}
-
-release() {
-    cd "$WORKSPACE"
 }
 
 build_libkrunfw

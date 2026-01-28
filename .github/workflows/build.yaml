@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: ["main", "dev"]
+    branches: [ "main", "dev" ]
   pull_request:
-    branches: ["main", "dev"]
+    branches: [ "main", "dev" ]
   workflow_dispatch:
 
 permissions:
@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: ["macos-14"]
+        os: [ "macos-14" ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -27,22 +27,22 @@ jobs:
         run: |
           ./build_libkrun.sh
 
-      - name: reuse libkrunfw-src tree
+      - name: download libkrunfw-src-Linux-aarch64.tar.zst tree
         uses: actions/download-artifact@v5
+        if: ${{ matrix.os == 'macos-14' }}
         with:
-          name: libkrunfw-src
+          name: libkrunfw-src-Linux-aarch64.tar.zst
 
       - name: Build libkrunfw
         shell: bash
         run: |
-          tar -xf libkrunfw-src.tar.zst
           ./build_libkrunfw.sh
 
   build_krun_krunfw_linux:
     strategy:
       fail-fast: true
       matrix:
-        os: ["ubuntu-22.04"]
+        os: [ "ubuntu-22.04","ubuntu-22.04-arm" ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -58,11 +58,12 @@ jobs:
         run: |
           ./build_libkrunfw.sh
 
-      - name: upload libkrunfw
+      - name: upload libkrunfw-src-Linux-aarch64.tar.zst
         uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
         with:
-          name: libkrunfw-src
-          path: libkrunfw-src.tar.zst
+          name: libkrunfw-src-Linux-aarch64.tar.zst
+          path: libkrunfw-src-Linux-aarch64.tar.zst
           retention-days: 1
           compression-level: 0
           overwrite: true
@@ -71,7 +72,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: ["ubuntu-22.04"]
+        os: [ "ubuntu-22.04","ubuntu-22.04-arm" ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -85,4 +86,4 @@ jobs:
       - name: Build static Dropbear
         shell: sh
         run: |
-          docker run --rm -v "$(pwd):$(pwd)" alpine:edge sh -c "$(pwd)/build_dropbear.sh"
+          docker run --rm --workdir "$(pwd)" -v "$(pwd):$(pwd)" alpine:edge sh -c "$(pwd)/build_dropbear.sh"
