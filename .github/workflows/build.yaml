@@ -3,12 +3,13 @@ name: build
 on:
   push:
     branches: [ "main", "dev" ]
+    tags: [ "v*.*.*" ]
   pull_request:
     branches: [ "main", "dev" ]
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build_alpine_rootfs:
@@ -153,3 +154,25 @@ jobs:
           retention-days: 1
           compression-level: 0
           overwrite: true
+
+  release:
+    if: github.ref_type == 'tag'
+    needs:
+      - build_alpine_rootfs
+      - build_krun_krunfw_darwin
+      - build_krun_krunfw_linux
+      - build_darwin_tools
+      - build_linux_tools
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - run: ls -la artifacts/
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.tar.zst
+          generate_release_notes: true
