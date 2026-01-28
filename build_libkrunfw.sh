@@ -18,6 +18,8 @@ build_libkrunfw_linux() {
 
     cd "$LIBKRUNFW_SRC"
 
+    cp -av "$WORKSPACE/config-libkrunfw_aarch64" "$LIBKRUNFW_SRC/config-libkrunfw_aarch64"
+
     make -j8
     make -j8 install
 }
