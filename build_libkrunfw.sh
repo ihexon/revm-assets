@@ -9,6 +9,7 @@ export LIBKRUNFW_SRC="$WORKSPACE/libkrunfw"
 export PREFIX="$LIBKRUNFW_SRC/_install_"
 
 export SRC_ARCHIVE="libkrunfw-src-$PLT-$ARCH.tar.zst"
+export RELEASE_TAR="libkrunfw-$PLT-$ARCH.tar.zst"
 
 build_libkrunfw_linux() {
     sudo apt-get update
@@ -25,9 +26,11 @@ build_libkrunfw_linux() {
         # set ARCH to arm64 rather then aarch64
         local ARM64="arm64"
         ARCH=$ARM64 make PREFIX="$PREFIX" -j8
+        rm -rf "$PREFIX"
         ARCH=$ARM64 make PREFIX="$PREFIX" -j8 install
     else
         make PREFIX="$PREFIX" -j8
+        rm -rf "$PREFIX"
         make PREFIX="$PREFIX" -j8 install
     fi
 }
@@ -68,5 +71,10 @@ repack_libkrunfw_source() {
     tar --zstd -cf "$SRC_ARCHIVE" -C "$(dirname "$LIBKRUNFW_SRC")" "$(basename "$LIBKRUNFW_SRC")"
 }
 
+release() {
+    tar --zstd -cvf "$RELEASE_TAR" -C "$PREFIX" .
+}
+
 build_libkrunfw
 repack_libkrunfw_source
+release

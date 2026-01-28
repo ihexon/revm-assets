@@ -38,6 +38,26 @@ jobs:
         run: |
           ./build_libkrunfw.sh
 
+      - name: upload libkrunfw-Darwin-arm64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'macos-14' }}
+        with:
+          name: libkrunfw-Darwin-arm64.tar.zst
+          path: libkrunfw-Darwin-arm64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+      - name: upload libkrun-Darwin-arm64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'macos-14' }}
+        with:
+          name: libkrun-Darwin-arm64.tar.zst
+          path: libkrun-Darwin-arm64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
   build_krun_krunfw_linux:
     strategy:
       fail-fast: true
@@ -57,13 +77,53 @@ jobs:
         shell: bash
         run: |
           ./build_libkrunfw.sh
-
+      # Only upload libkrunfw-src-Linux-aarch64.tar.zst
       - name: upload libkrunfw-src-Linux-aarch64.tar.zst
         uses: actions/upload-artifact@v4
         if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
         with:
           name: libkrunfw-src-Linux-aarch64.tar.zst
           path: libkrunfw-src-Linux-aarch64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+      - name: upload libkrunfw-Linux-x86_64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        with:
+          name: libkrunfw-Linux-x86_64.tar.zst
+          path: libkrunfw-Linux-x86_64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+      - name: upload libkrunfw-Linux-aarch64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
+        with:
+          name: libkrunfw-Linux-aarch64.tar.zst
+          path: libkrunfw-Linux-aarch64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+      - name: upload libkrun-Linux-aarch64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
+        with:
+          name: libkrun-Linux-aarch64.tar.zst
+          path: libkrun-Linux-aarch64.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+      - name: upload libkrun-Linux-x86_64.tar.zst
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        with:
+          name: libkrun-Linux-x86_64.tar.zst
+          path: libkrun-Linux-x86_64.tar.zst
           retention-days: 1
           compression-level: 0
           overwrite: true
