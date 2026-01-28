@@ -35,7 +35,7 @@ jobs:
       - name: Build libkrunfw
         shell: bash
         run: |
-          tar -xf libkrunfw-src.tar.zst -C "$(pwd)"
+          tar -xf libkrunfw-src.tar.zst
           ./build_libkrunfw.sh
 
   build_krun_krunfw_linux:

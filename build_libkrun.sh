@@ -1,48 +1,54 @@
 #! /usr/bin/env bash
 set -xe
-PLT=$(uname)
-ARCH=$(uname -m)
-pwd_c="$(pwd)"
 
-git clone https://github.com/containers/libkrun.git
+export PLT=$(uname)
+export ARCH=$(uname -m)
+
+export WORKSPACE="$(pwd)"
+
+export LIBKRUN_SRC="$WORKSPACE/libkrun"
+export PREFIX="$LIBKRUN_SRC/_install_"
+
+export SRC_ARCHIVE="libkrun-src.tar"
+
+
+git clone https://github.com/containers/libkrun.git "$LIBKRUN_SRC"
 
 build_libkrun_dawrin() {
-	cd "$pwd_c"
-	cd libkrun
+    brew tap slp/krun
+    brew install virglrenderer lld
+    brew info virglrenderer
 
-	brew tap slp/krun
-	brew install virglrenderer lld
-	brew info virglrenderer
-	PREFIX="$HOME/libkrun_builded" make GPU=1 BLK=1 NET=1
-	PREFIX="$HOME/libkrun_builded" make GPU=1 BLK=1 NET=1 install
+    cd "$LIBKRUN_SRC"
+    make GPU=1 BLK=1 NET=1
+    make GPU=1 BLK=1 NET=1 install
 }
 
 build_libkrun_linux() {
-	cd "$pwd_c"
-	cd libkrun
+    sudo apt update
+    sudo apt install llvm clang libclang-dev
 
-	sudo apt update
-	sudo apt install llvm clang libclang-dev
-	PREFIX="$HOME/libkrun_builded" make BLK=1 NET=1
-	PREFIX="$HOME/libkrun_builded" make BLK=1 NET=1 install
+    cd "$LIBKRUN_SRC"
+    make BLK=1 NET=1
+    make BLK=1 NET=1 install
 }
 
 build_libkrun() {
-	if [[ "$PLT" == "Linux" ]]; then
-		build_libkrun_linux
-	fi
+    cd "$WORKSPACE"
 
-	if [[ "$PLT" == "Darwin" ]]; then
-		build_libkrun_dawrin
-	fi
+    if [[ "$PLT" == "Linux" ]]; then
+        build_libkrun_linux
+    fi
+
+    if [[ "$PLT" == "Darwin" ]]; then
+        build_libkrun_dawrin
+    fi
 }
 
-
-repack_libkrun_source(){
-	cd "$pwd_c"
-	tar --zstd -cf libkrun-src.tar libkrun/
+repack_libkrun_source() {
+    cd "$WORKSPACE"
+    tar --zstd -cf "$SRC_ARCHIVE" -C "$(dirname "$LIBKRUN_SRC")" "$(basename "$LIBKRUN_SRC")"
 }
-
 
 build_libkrun
 repack_libkrun_source
