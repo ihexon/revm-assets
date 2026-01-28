@@ -11,36 +11,47 @@ permissions:
   contents: read
 
 jobs:
-  build_krun_krunfw_darwin:
-    needs: build_krun_krunfw_linux
+  build_alpine_rootfs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ "macos-14" ]
+        include:
+          - os: ubuntu-22.04
+            arch: x86_64
+          - os: ubuntu-22.04-arm
+            arch: aarch64
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Build libkrun
-        shell: bash
+      - name: Build Alpine Rootfs
         run: |
-          ./build_libkrun.sh
+          ./build_alpine_rootfs.sh
 
-      - name: download libkrunfw-src-Linux-aarch64.tar.zst tree
-        uses: actions/download-artifact@v5
-        if: ${{ matrix.os == 'macos-14' }}
+      - name: upload alpine-rootfs-Linux-${{ matrix.arch }}.tar.zst
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpine-rootfs-Linux-${{ matrix.arch }}.tar.zst
+          path: alpine-rootfs-Linux-${{ matrix.arch }}.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+
+  build_krun_krunfw_darwin:
+    needs: build_krun_krunfw_linux
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./build_libkrun.sh
+
+      - uses: actions/download-artifact@v4
         with:
           name: libkrunfw-src-Linux-aarch64.tar.zst
 
-      - name: Build libkrunfw
-        shell: bash
-        run: |
-          ./build_libkrunfw.sh
+      - run: ./build_libkrunfw.sh
 
-      - name: upload libkrunfw-Darwin-arm64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'macos-14' }}
+      - uses: actions/upload-artifact@v4
         with:
           name: libkrunfw-Darwin-arm64.tar.zst
           path: libkrunfw-Darwin-arm64.tar.zst
@@ -48,9 +59,7 @@ jobs:
           compression-level: 0
           overwrite: true
 
-      - name: upload libkrun-Darwin-arm64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'macos-14' }}
+      - uses: actions/upload-artifact@v4
         with:
           name: libkrun-Darwin-arm64.tar.zst
           path: libkrun-Darwin-arm64.tar.zst
@@ -62,25 +71,20 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ "ubuntu-22.04","ubuntu-22.04-arm" ]
+        include:
+          - os: ubuntu-22.04
+            arch: x86_64
+          - os: ubuntu-22.04-arm
+            arch: aarch64
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - run: ./build_libkrun.sh
+      - run: ./build_libkrunfw.sh
 
-      - name: Build libkrun
-        shell: bash
-        run: |
-          ./build_libkrun.sh
-
-      - name: Build libkrunfw
-        shell: bash
-        run: |
-          ./build_libkrunfw.sh
-      # Only upload libkrunfw-src-Linux-aarch64.tar.zst
-      - name: upload libkrunfw-src-Linux-aarch64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
+      # Only upload on aarch64
+      - uses: actions/upload-artifact@v4
+        if: matrix.arch == 'aarch64'
         with:
           name: libkrunfw-src-Linux-aarch64.tar.zst
           path: libkrunfw-src-Linux-aarch64.tar.zst
@@ -88,62 +92,29 @@ jobs:
           compression-level: 0
           overwrite: true
 
-      - name: upload libkrunfw-Linux-x86_64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
+      - uses: actions/upload-artifact@v4
         with:
-          name: libkrunfw-Linux-x86_64.tar.zst
-          path: libkrunfw-Linux-x86_64.tar.zst
+          name: libkrunfw-Linux-${{ matrix.arch }}.tar.zst
+          path: libkrunfw-Linux-${{ matrix.arch }}.tar.zst
           retention-days: 1
           compression-level: 0
           overwrite: true
 
-      - name: upload libkrunfw-Linux-aarch64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
+      - uses: actions/upload-artifact@v4
         with:
-          name: libkrunfw-Linux-aarch64.tar.zst
-          path: libkrunfw-Linux-aarch64.tar.zst
-          retention-days: 1
-          compression-level: 0
-          overwrite: true
-
-      - name: upload libkrun-Linux-aarch64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
-        with:
-          name: libkrun-Linux-aarch64.tar.zst
-          path: libkrun-Linux-aarch64.tar.zst
-          retention-days: 1
-          compression-level: 0
-          overwrite: true
-
-      - name: upload libkrun-Linux-x86_64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
-        with:
-          name: libkrun-Linux-x86_64.tar.zst
-          path: libkrun-Linux-x86_64.tar.zst
+          name: libkrun-Linux-${{ matrix.arch }}.tar.zst
+          path: libkrun-Linux-${{ matrix.arch }}.tar.zst
           retention-days: 1
           compression-level: 0
           overwrite: true
 
   build_darwin_tools:
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ "macos-14" ]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-14
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - run: ./build_e2fsprogs.sh
 
-      - name: Build e2fsprogs
-        run: |
-          ./build_e2fsprogs.sh
-
-      - name: upload e2fsprogs-Darwin-arm64.tar.zst
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: e2fsprogs-Darwin-arm64.tar.zst
           path: e2fsprogs-Darwin-arm64.tar.zst
@@ -156,58 +127,29 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ "ubuntu-22.04","ubuntu-22.04-arm" ]
+        include:
+          - os: ubuntu-22.04
+            arch: x86_64
+          - os: ubuntu-22.04-arm
+            arch: aarch64
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - run: ./build_busybox.sh
+      - run: docker run --rm --workdir "$(pwd)" -v "$(pwd):$(pwd)" alpine:edge sh -c "$(pwd)/build_dropbear.sh"
 
-      - name: Build static Busybox
-        shell: bash
-        run: |
-          ./build_busybox.sh
-
-      - name: Build static Dropbear
-        shell: sh
-        run: |
-          docker run --rm --workdir "$(pwd)" -v "$(pwd):$(pwd)" alpine:edge sh -c "$(pwd)/build_dropbear.sh"
-
-      - name: upload busybox-Linux-x86_64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
+      - uses: actions/upload-artifact@v4
         with:
-          name: busybox-Linux-x86_64.tar.zst
-          path: busybox-Linux-x86_64.tar.zst
+          name: busybox-Linux-${{ matrix.arch }}.tar.zst
+          path: busybox-Linux-${{ matrix.arch }}.tar.zst
           retention-days: 1
           compression-level: 0
           overwrite: true
 
-      - name: upload busybox-Linux-aarch64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
+      - uses: actions/upload-artifact@v4
         with:
-          name: busybox-Linux-aarch64.tar.zst
-          path: busybox-Linux-aarch64.tar.zst
-          retention-days: 1
-          compression-level: 0
-          overwrite: true
-
-      - name: upload dropbear-Linux-x86_64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
-        with:
-          name: dropbear-Linux-x86_64.tar.zst
-          path: dropbear-Linux-x86_64.tar.zst
-          retention-days: 1
-          compression-level: 0
-          overwrite: true
-
-      - name: upload dropbear-Linux-aarch64.tar.zst
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu-22.04-arm' }}
-        with:
-          name: dropbear-Linux-aarch64.tar.zst
-          path: dropbear-Linux-aarch64.tar.zst
+          name: dropbear-Linux-${{ matrix.arch }}.tar.zst
+          path: dropbear-Linux-${{ matrix.arch }}.tar.zst
           retention-days: 1
           compression-level: 0
           overwrite: true
