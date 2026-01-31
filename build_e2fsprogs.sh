@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 set -xe
+set -o pipfail
 
 export PLT=$(uname)
 export ARCH=$(uname -m)
@@ -21,6 +22,15 @@ build_e2fsprogs_darwin() {
         --with-systemd-unit-dir="$PREFIX/etc/systemd"
     make -j8
     make install
+
+    tmp_dir="libtune2fs_tmp"
+    mkdir -p "$tmp_dir"
+    cd "$tmp_dir"
+
+    gcc -DBUILD_AS_LIB "-I$SRC_DIR/lib" -c "$SRC_DIR/misc/tune2fs.c" "$SRC_DIR/misc/util.c"
+    ar rcs libtune2fs.a tune2fs.o util.o
+    nm libtune2fs.a | grep tune2fs_main
+    cp -av libtune2fs.a "$PREFIX/lib"
 }
 
 build_e2fsprogs_linux() {
