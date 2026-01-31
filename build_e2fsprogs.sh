@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 set -xe
+set -o pipefail
 
 export PLT=$(uname)
 export ARCH=$(uname -m)
@@ -21,6 +22,7 @@ build_e2fsprogs_darwin() {
         --with-systemd-unit-dir="$PREFIX/etc/systemd"
     make -j8
     make install
+
 }
 
 build_e2fsprogs_linux() {
@@ -42,6 +44,18 @@ build_e2fsprogs_linux() {
     make install
 }
 
+build_libtune2fs() {
+    cd "$SRC_DIR"
+
+    tmp_dir="libtune2fs_tmp"
+    mkdir -p "$tmp_dir" && cd "$tmp_dir"
+
+    gcc -DBUILD_AS_LIB "-I$SRC_DIR/lib" -c "$SRC_DIR/misc/tune2fs.c" "$SRC_DIR/misc/util.c"
+    ar rcs libtune2fs.a tune2fs.o util.o
+    nm libtune2fs.a | grep tune2fs_main
+    cp -av libtune2fs.a "$PREFIX/lib"
+}
+
 release() {
     cd "$WORKSPACE"
     tar --zstd -cvf "$RELEASE_TAR" -C "$PREFIX" .
@@ -57,6 +71,8 @@ build() {
     if [[ "$PLT" == "Darwin" ]]; then
         build_e2fsprogs_darwin
     fi
+
+    build_libtune2fs
 }
 
 build
