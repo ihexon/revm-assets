@@ -2,10 +2,10 @@ name: build
 
 on:
   push:
-    branches: [ "main", "dev" ]
-    tags: [ "v*.*.*" ]
+    branches: ["main", "dev"]
+    tags: ["v*.*.*"]
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
   workflow_dispatch:
 
 permissions:
@@ -37,7 +37,6 @@ jobs:
           retention-days: 1
           compression-level: 0
           overwrite: true
-
 
   build_krun_krunfw_darwin:
     needs: build_krun_krunfw_linux
@@ -122,7 +121,6 @@ jobs:
           retention-days: 1
           compression-level: 0
           overwrite: true
-
 
   build_linux_tools:
     strategy:

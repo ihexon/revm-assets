@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 set -xe
+set -o pipefail
+
 export PLT=$(uname)
 export ARCH=$(uname -m)
 
@@ -10,14 +12,14 @@ export PREFIX="$LIBKRUNFW_SRC/_install_"
 
 export SRC_ARCHIVE="libkrunfw-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrunfw-$PLT-$ARCH.tar.zst"
+export commit_id="6e404e9fdb7d1c581d844ffe5dfb72cf7a9a0b1f"
 
 build_libkrunfw_linux() {
     sudo apt-get update
     sudo apt-get install -y make gcc bc bison flex elfutils python3-pyelftools curl patch libelf-dev
 
     git clone https://github.com/containers/libkrunfw.git "$LIBKRUNFW_SRC"
-
-    cd "$LIBKRUNFW_SRC"
+    cd "$LIBKRUNFW_SRC" && git checkout "$commit_id"
 
     cp -av "$WORKSPACE/config-libkrunfw_aarch64" "$LIBKRUNFW_SRC/config-libkrunfw_aarch64"
     cp -av "$WORKSPACE/config-libkrunfw_x86_64" "$LIBKRUNFW_SRC/config-libkrunfw_x86_64"
