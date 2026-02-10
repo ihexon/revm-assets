@@ -16,7 +16,7 @@ build_linux() {
     apk add gcc git musl-dev zlib-dev make bash tar zstd git
     git clone -b DROPBEAR_2025.89 https://github.com/mkj/dropbear.git "$SRC_DIR"
     cd "$SRC_DIR"
-    LDFLAGS="-Wl,--gc-sections" CFLAGS="-ffunction-sections -fdata-sections" bash ./configure \
+    LDFLAGS="-Wl,--gc-sections" CFLAGS="-ffunction-sections -fdata-sections -DDROPBEAR_LISTEN_BACKLOG=50" bash ./configure \
         --prefix="$PREFIX" \
         --disable-zlib \
         --disable-syslog \
