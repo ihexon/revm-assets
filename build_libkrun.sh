@@ -13,7 +13,7 @@ export PREFIX="$LIBKRUN_SRC/_install_"
 export SRC_ARCHIVE="libkrun-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrun-$PLT-$ARCH.tar.zst"
 
-export commit_id="ed9c408129fa4730e65b53333819a477ede93555"
+export commit_id="54da12a8ae4d20f95192670bdf58040104ffae93"
 
 git clone https://github.com/containers/libkrun.git "$LIBKRUN_SRC" && cd "$LIBKRUN_SRC" && git checkout "$commit_id"
 
@@ -31,7 +31,7 @@ build_libkrun_darwin() {
 
 build_libkrun_linux() {
     sudo apt update
-    sudo apt install -y llvm clang libclang-dev
+    sudo apt install -y llvm clang libclang-dev libcap-ng-dev
 
     cd "$LIBKRUN_SRC"
 
