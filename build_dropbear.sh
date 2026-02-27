@@ -11,11 +11,15 @@ export PREFIX="$SRC_DIR/_install_"
 
 export RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
 
+dropbear_patch="$WORKSPACE/dropbear.diff"
+
 build_linux() {
     cd "$WORKSPACE"
     apk add gcc git musl-dev zlib-dev make bash tar zstd git
     git clone -b DROPBEAR_2025.89 https://github.com/mkj/dropbear.git "$SRC_DIR"
-    cd "$SRC_DIR"
+    cd "$SRC_DIR" 
+    git apply "$dropbear_patch"
+
     LDFLAGS="-Wl,--gc-sections" CFLAGS="-ffunction-sections -fdata-sections -DDROPBEAR_LISTEN_BACKLOG=50" bash ./configure \
         --prefix="$PREFIX" \
         --disable-zlib \
