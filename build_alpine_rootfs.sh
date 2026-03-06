@@ -13,7 +13,7 @@ export RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
 
 build_alpine_rootfs() {
     cd "$WORKSPACE"
-    docker run --name="$PKG_NAME" alpine:3.23.3 sh -c "apk update && apk add podman nftables"
+    docker run --name="$PKG_NAME" alpine:3.23.3 sh -c "apk update && apk add podman nftables bash"
 }
 
 release() {
