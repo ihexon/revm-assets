@@ -21,7 +21,7 @@ release() {
     mkdir -p "$PREFIX"
     docker export "$PKG_NAME" | tar -x -C "$PREFIX"
     install -D -m 0644 "$WORKSPACE/containers.conf" "$PREFIX/etc/containers/containers.conf"
-    install -D -m 0644 "$WORKSPACE/storage.conf" "$PREFIX/etc/containers/storage.conf"
+    #install -D -m 0644 "$WORKSPACE/storage.conf" "$PREFIX/etc/containers/storage.conf"
     tar --zstd -cvf "$RELEASE_TAR" -C "$PREFIX" .
     docker rm "$PKG_NAME"
 }
