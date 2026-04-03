@@ -30,6 +30,7 @@ build_linux() {
         --disable-wtmp \
         --disable-shadow \
         --disable-fuzz \
+        --disable-lastlog \
         --enable-static
     make PROGRAMS="dropbear dbclient dropbearkey dropbearconvert scp" MULTI=1
     make PROGRAMS="dropbear dbclient dropbearkey dropbearconvert scp" MULTI=1 install
