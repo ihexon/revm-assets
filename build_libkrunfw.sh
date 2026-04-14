@@ -12,7 +12,7 @@ export PREFIX="$LIBKRUNFW_SRC/_install_"
 
 export SRC_ARCHIVE="libkrunfw-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrunfw-$PLT-$ARCH.tar.zst"
-export commit_id="463f717bbdd916e1352a025b6fb2456e882b0b39"
+export commit_id="430e31bc54f06da6bb875307fb96c24476a02338"
 
 build_libkrunfw_linux() {
     sudo apt-get update
