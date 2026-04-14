@@ -15,8 +15,6 @@ export RELEASE_TAR="libkrun-$PLT-$ARCH.tar.zst"
 
 export commit_id="ff86b2ee66826b893a87daa21bc509a863d6a824"
 
-export TIMESYNC=1 
-
 git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC" && cd "$LIBKRUN_SRC" && git checkout "$commit_id"
 
 build_libkrun_darwin() {
