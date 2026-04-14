@@ -12,13 +12,13 @@ export PREFIX="$LIBKRUNFW_SRC/_install_"
 
 export SRC_ARCHIVE="libkrunfw-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrunfw-$PLT-$ARCH.tar.zst"
-export commit_id="430e31bc54f06da6bb875307fb96c24476a02338"
+export commit_id="ee09844f71b6fc9711dd613f5c77201ff19e79eb"
 
 build_libkrunfw_linux() {
     sudo apt-get update
     sudo apt-get install -y make gcc bc bison flex elfutils python3-pyelftools curl patch libelf-dev
 
-    git clone https://github.com/containers/libkrunfw.git "$LIBKRUNFW_SRC"
+    git clone https://github.com/ihexon/libkrunfw.git "$LIBKRUNFW_SRC"
     cd "$LIBKRUNFW_SRC" && git checkout "$commit_id"
 
     cp -av "$WORKSPACE/config-libkrunfw_aarch64" "$LIBKRUNFW_SRC/config-libkrunfw_aarch64"

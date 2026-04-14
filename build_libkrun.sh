@@ -4,18 +4,15 @@ set -o pipefail
 
 export PLT=$(uname)
 export ARCH=$(uname -m)
-
 export WORKSPACE="$(pwd)"
-
 export LIBKRUN_SRC="$WORKSPACE/libkrun"
 export PREFIX="$LIBKRUN_SRC/_install_"
-
 export SRC_ARCHIVE="libkrun-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrun-$PLT-$ARCH.tar.zst"
+export commit_id="084e2346580d30f9cc7929e944d8dbc5da5cb7ad"
 
-export commit_id="ff86b2ee66826b893a87daa21bc509a863d6a824"
-
-git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC" && cd "$LIBKRUN_SRC" && git checkout "$commit_id"
+git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC"
+cd "$LIBKRUN_SRC" && git checkout "$commit_id"
 
 build_libkrun_darwin() {
     brew tap slp/krun
