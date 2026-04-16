@@ -20,10 +20,10 @@ build_libkrun_darwin() {
     brew info virglrenderer
 
     cd "$LIBKRUN_SRC"
-    make PREFIX="$PREFIX" GPU=1 BLK=1 NET=1
+    TIMESYNC=1 make PREFIX="$PREFIX" GPU=1 BLK=1 NET=1
 
     rm -rf "$PREFIX"
-    make PREFIX="$PREFIX" GPU=1 BLK=1 NET=1 install
+    TIMESYNC=1 make PREFIX="$PREFIX" GPU=1 BLK=1 NET=1 install
 }
 
 build_libkrun_linux() {
