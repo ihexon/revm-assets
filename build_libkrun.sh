@@ -20,6 +20,7 @@ build_libkrun_darwin() {
     brew info virglrenderer
 
     cd "$LIBKRUN_SRC"
+    make clean
     TIMESYNC=1 make PREFIX="$PREFIX" GPU=1 BLK=1 NET=1
 
     rm -rf "$PREFIX"
@@ -31,7 +32,7 @@ build_libkrun_linux() {
     sudo apt install -y llvm clang libclang-dev libcap-ng-dev
 
     cd "$LIBKRUN_SRC"
-
+    make clean
     make PREFIX="$PREFIX" BLK=1 NET=1
 
     rm -rf "$PREFIX"
