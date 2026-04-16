@@ -9,7 +9,7 @@ export LIBKRUN_SRC="$WORKSPACE/libkrun"
 export PREFIX="$LIBKRUN_SRC/_install_"
 export SRC_ARCHIVE="libkrun-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrun-$PLT-$ARCH.tar.zst"
-export commit_id="084e2346580d30f9cc7929e944d8dbc5da5cb7ad"
+export commit_id="62e71f4a922eabfd28ce554eb2aec1720de1672e"
 
 git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC"
 cd "$LIBKRUN_SRC" && git checkout "$commit_id"
