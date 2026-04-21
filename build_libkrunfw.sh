@@ -18,7 +18,7 @@ export https_proxy=$http_proxy
 
 build_libkrunfw_linux() {
     sudo apt-get update
-    sudo apt-get install -y make gcc bc bison flex elfutils python3-pyelftools curl patch libelf-dev
+    sudo apt-get install -y make gcc bc bison flex elfutils python3-pyelftools curl patch libelf-dev zstd
 
     git clone https://github.com/ihexon/libkrunfw.git "$LIBKRUNFW_SRC"
     cd "$LIBKRUNFW_SRC" && git checkout "$commit_id"
