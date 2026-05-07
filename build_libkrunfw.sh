@@ -12,7 +12,7 @@ export PREFIX="$LIBKRUNFW_SRC/_install_"
 
 export SRC_ARCHIVE="libkrunfw-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrunfw-$PLT-$ARCH.tar.zst"
-export commit_id="ee09844f71b6fc9711dd613f5c77201ff19e79eb"
+export commit_id="7d995aa487644fa0f57eb4f42fe730460f50087b"
 export http_proxy=$http_proxy
 export https_proxy=$http_proxy
 
