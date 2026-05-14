@@ -14,7 +14,7 @@ export commit_id="391409d0335d67ab3c7e86dcd16ea8af70f231a0"
 git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC"
 cd "$LIBKRUN_SRC" && git checkout "$commit_id"
 
-enable_libkrun_staticlib() {
+enable_linux_libkrun_staticlib() {
     cd "$LIBKRUN_SRC"
     if ! grep -q '"staticlib"' src/libkrun/Cargo.toml; then
         sed -i 's/crate-type = \["cdylib", "lib"\]/crate-type = ["cdylib", "staticlib", "lib"]/' src/libkrun/Cargo.toml
@@ -27,13 +27,11 @@ build_libkrun_darwin() {
     brew info virglrenderer
 
     cd "$LIBKRUN_SRC"
-    enable_libkrun_staticlib
     make clean
     TIMESYNC=1 make PREFIX="$PREFIX" GPU=1 BLK=1 NET=1
 
     rm -rf "$PREFIX"
     TIMESYNC=1 make PREFIX="$PREFIX" GPU=1 BLK=1 NET=1 install
-    install -m 644 target/release/libkrun.a "$PREFIX/lib/"
 }
 
 build_libkrun_linux() {
@@ -43,7 +41,7 @@ build_libkrun_linux() {
     export RUSTFLAGS="${RUSTFLAGS:-} -C linker=gcc -C link-arg=-static-libgcc"
 
     cd "$LIBKRUN_SRC"
-    enable_libkrun_staticlib
+    enable_linux_libkrun_staticlib
     make clean
     make PREFIX="$PREFIX" BLK=1 NET=1
 

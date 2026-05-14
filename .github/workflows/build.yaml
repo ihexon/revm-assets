@@ -9,10 +9,22 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  ALPINE_VERSION: 3.23.3
 
 jobs:
   build_alpine_rootfs:
+    name: build alpine rootfs (${{ matrix.arch }})
     strategy:
       fail-fast: true
       matrix:
@@ -38,26 +50,12 @@ jobs:
           compression-level: 0
           overwrite: true
 
-  build_krun_krunfw_darwin:
-    needs: build_krun_krunfw_linux
+  build_libkrun_darwin:
+    name: build libkrun (Darwin arm64)
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - run: ./build_libkrun.sh
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: libkrunfw-src-Linux-aarch64.tar.zst
-
-      - run: ./build_libkrunfw.sh
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: libkrunfw-Darwin-arm64.tar.zst
-          path: libkrunfw-Darwin-arm64.tar.zst
-          retention-days: 1
-          compression-level: 0
-          overwrite: true
 
       - uses: actions/upload-artifact@v4
         with:
@@ -67,7 +65,8 @@ jobs:
           compression-level: 0
           overwrite: true
 
-  build_krun_krunfw_linux:
+  build_libkrun_linux:
+    name: build libkrun (Linux ${{ matrix.arch }})
     strategy:
       fail-fast: true
       matrix:
@@ -80,9 +79,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: ./build_libkrun.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: libkrun-Linux-${{ matrix.arch }}.tar.zst
+          path: libkrun-Linux-${{ matrix.arch }}.tar.zst
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
+  build_libkrunfw_linux:
+    name: build libkrunfw (Linux ${{ matrix.arch }})
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            arch: x86_64
+          - os: ubuntu-22.04-arm
+            arch: aarch64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
       - run: ./build_libkrunfw.sh
 
-      # Only upload on aarch64
       - uses: actions/upload-artifact@v4
         if: matrix.arch == 'aarch64'
         with:
@@ -100,29 +120,29 @@ jobs:
           compression-level: 0
           overwrite: true
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: libkrun-Linux-${{ matrix.arch }}.tar.zst
-          path: libkrun-Linux-${{ matrix.arch }}.tar.zst
-          retention-days: 1
-          compression-level: 0
-          overwrite: true
-
-  build_darwin_tools:
+  build_libkrunfw_darwin:
+    name: build libkrunfw (Darwin arm64)
+    needs: build_libkrunfw_linux
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - run: ./build_e2fsprogs.sh
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: libkrunfw-src-Linux-aarch64.tar.zst
+
+      - run: ./build_libkrunfw.sh
 
       - uses: actions/upload-artifact@v4
         with:
-          name: e2fsprogs-Darwin-arm64.tar.zst
-          path: e2fsprogs-Darwin-arm64.tar.zst
+          name: libkrunfw-Darwin-arm64.tar.zst
+          path: libkrunfw-Darwin-arm64.tar.zst
           retention-days: 1
           compression-level: 0
           overwrite: true
 
-  build_linux_tools:
+  build_busybox_linux:
+    name: build busybox (Linux ${{ matrix.arch }})
     strategy:
       fail-fast: true
       matrix:
@@ -135,8 +155,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: ./build_busybox.sh
-      - run: docker run --rm --workdir "$(pwd)" -v "$(pwd):$(pwd)" alpine:3.23.3 sh -c "apk update && apk add bash && $(pwd)/build_dropbear.sh"
-      - run: docker run --rm --workdir "$(pwd)" -v "$(pwd):$(pwd)" alpine:3.23.3 sh -c "apk update && apk add bash && $(pwd)/build_e2fsprogs.sh"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -146,6 +164,26 @@ jobs:
           compression-level: 0
           overwrite: true
 
+  build_dropbear_linux:
+    name: build dropbear (Linux ${{ matrix.arch }})
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            arch: x86_64
+          - os: ubuntu-22.04-arm
+            arch: aarch64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          docker run --rm \
+            --workdir "$GITHUB_WORKSPACE" \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" \
+            alpine:${ALPINE_VERSION} \
+            sh -c 'apk add --no-cache bash && ./build_dropbear.sh'
+
       - uses: actions/upload-artifact@v4
         with:
           name: dropbear-Linux-${{ matrix.arch }}.tar.zst
@@ -154,22 +192,19 @@ jobs:
           compression-level: 0
           overwrite: true
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: e2fsprogs-Linux-${{ matrix.arch }}.tar.zst
-          path: e2fsprogs-Linux-${{ matrix.arch }}.tar.zst
-          retention-days: 1
-          compression-level: 0
-          overwrite: true
-
   release:
+    name: release
     if: github.ref_type == 'tag'
     needs:
       - build_alpine_rootfs
-      - build_krun_krunfw_darwin
-      - build_krun_krunfw_linux
-      - build_darwin_tools
-      - build_linux_tools
+      - build_busybox_linux
+      - build_dropbear_linux
+      - build_libkrun_darwin
+      - build_libkrun_linux
+      - build_libkrunfw_darwin
+      - build_libkrunfw_linux
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -177,7 +212,7 @@ jobs:
           path: artifacts
           merge-multiple: true
       - run: |
-          rm artifacts/libkrunfw-src-Linux-aarch64.tar.zst
+          rm -f artifacts/libkrunfw-src-Linux-aarch64.tar.zst
           ls -la artifacts/
 
       - uses: softprops/action-gh-release@v2
