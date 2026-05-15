@@ -10,7 +10,7 @@ ALPINE_VERSION="${ALPINE_VERSION:-3.23.3}"
 WORKSPACE="$(pwd)"
 ROOTFS="$WORKSPACE/$PKG_NAME"
 CONTAINER="$PKG_NAME-$ARCH"
-RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+RELEASE_TAR="$WORKSPACE/$PKG_NAME-$PLT-$ARCH.tar.zst"
 
 cleanup() {
     docker rm -f "$CONTAINER" >/dev/null 2>&1 || true

@@ -10,7 +10,7 @@ WORKSPACE="$(pwd)"
 SRC_DIR="$WORKSPACE/$PKG_NAME"
 PREFIX="$SRC_DIR/_install_"
 
-RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+RELEASE_TAR="$WORKSPACE/$PKG_NAME-$PLT-$ARCH.tar.zst"
 
 DROPBEAR_PATCH="$WORKSPACE/dropbear.diff"
 DROPBEAR_PROGRAMS="dropbear dbclient dropbearkey dropbearconvert scp"

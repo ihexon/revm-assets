@@ -10,8 +10,8 @@ WORKSPACE="$(pwd)"
 LIBKRUNFW_SRC="$WORKSPACE/$PKG_NAME"
 PREFIX="$LIBKRUNFW_SRC/_install_"
 
-RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
-SRC_ARCHIVE="$PKG_NAME-src-Linux-aarch64.tar.zst"
+RELEASE_TAR="$WORKSPACE/$PKG_NAME-$PLT-$ARCH.tar.zst"
+SRC_ARCHIVE="$WORKSPACE/$PKG_NAME-src-Linux-aarch64.tar.zst"
 
 build_libkrunfw_darwin() {
     cd "$WORKSPACE"
