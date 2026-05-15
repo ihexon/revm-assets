@@ -9,6 +9,8 @@ export LIBKRUN_SRC="$WORKSPACE/libkrun"
 export PREFIX="$LIBKRUN_SRC/_install_"
 export LIBEPOXY_PREFIX="$WORKSPACE/libepoxy/_install_"
 export VIRGLRENDERER_PREFIX="$WORKSPACE/virglrenderer/_install_"
+export LIBEPOXY_TAR="$WORKSPACE/libepoxy-Darwin-arm64.tar.zst"
+export VIRGLRENDERER_TAR="$WORKSPACE/virglrenderer-Darwin-arm64.tar.zst"
 export SRC_ARCHIVE="libkrun-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrun-$PLT-$ARCH.tar.zst"
 export commit_id="391409d0335d67ab3c7e86dcd16ea8af70f231a0"
@@ -25,20 +27,20 @@ set_libkrun_crate_type() {
 }
 
 unpack_static_deps_darwin() {
-    if [[ ! -f libepoxy-Darwin-arm64.tar.zst ]]; then
+    if [[ ! -f "$LIBEPOXY_TAR" ]]; then
         echo "prebuild libepoxy-Darwin-arm64.tar.zst not find, please download it"
         exit 100
     fi
 
-    if [[ ! -f virglrenderer-Darwin-arm64.tar.zst ]]; then
+    if [[ ! -f "$VIRGLRENDERER_TAR" ]]; then
         echo "prebuild virglrenderer-Darwin-arm64.tar.zst not find, please download it"
         exit 100
     fi
 
     rm -rf "$LIBEPOXY_PREFIX" "$VIRGLRENDERER_PREFIX"
     mkdir -p "$LIBEPOXY_PREFIX" "$VIRGLRENDERER_PREFIX"
-    tar --zstd -xf libepoxy-Darwin-arm64.tar.zst -C "$LIBEPOXY_PREFIX"
-    tar --zstd -xf virglrenderer-Darwin-arm64.tar.zst -C "$VIRGLRENDERER_PREFIX"
+    tar --zstd -xf "$LIBEPOXY_TAR" -C "$LIBEPOXY_PREFIX"
+    tar --zstd -xf "$VIRGLRENDERER_TAR" -C "$VIRGLRENDERER_PREFIX"
 }
 
 install_static_deps_darwin() {
