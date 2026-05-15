@@ -17,9 +17,6 @@ export http_proxy=$http_proxy
 export https_proxy=$http_proxy
 
 build_libkrunfw_linux() {
-    sudo apt-get update
-    sudo apt-get install -y make gcc bc bison flex elfutils python3-pyelftools curl patch libelf-dev zstd
-
     git clone https://github.com/ihexon/libkrunfw.git "$LIBKRUNFW_SRC"
     cd "$LIBKRUNFW_SRC" && git checkout "$commit_id"
 
@@ -27,47 +24,13 @@ build_libkrunfw_linux() {
     cp -av "$WORKSPACE/config-libkrunfw_x86_64" "$LIBKRUNFW_SRC/config-libkrunfw_x86_64"
 
     if [[ "$ARCH" == "aarch64" ]]; then
-        # set ARCH to arm64 rather then aarch64
-        local ARM64="arm64"
-        ARCH=$ARM64 make PREFIX="$PREFIX" -j8
+        ARCH=arm64 make PREFIX="$PREFIX" -j8
         rm -rf "$PREFIX"
-        ARCH=$ARM64 make PREFIX="$PREFIX" -j8 install
+        ARCH=arm64 make PREFIX="$PREFIX" -j8 install
     else
         make PREFIX="$PREFIX" -j8
         rm -rf "$PREFIX"
         make PREFIX="$PREFIX" -j8 install
-    fi
-}
-
-build_libkrunfw_darwin() {
-    cd "$WORKSPACE"
-
-    if [[ ! -f libkrunfw-src-Linux-aarch64.tar.zst ]]; then
-        echo "prebuild libkrunfw-src-Linux-aarch64.tar.zst not find, please download it"
-        exit 100
-    fi
-
-    tar --zstd -xf libkrunfw-src-Linux-aarch64.tar.zst
-
-    cd "$LIBKRUNFW_SRC"
-
-    if [[ ! -f kernel.c ]]; then
-        echo "kernel.c not find, please build kernel.c on linux first"
-        exit 100
-    fi
-
-    make PREFIX="$PREFIX" -j8
-    rm -rf "$PREFIX"
-    make PREFIX="$PREFIX" -j8 install
-}
-
-build_libkrunfw() {
-    if [[ "$PLT" == "Linux" ]]; then
-        build_libkrunfw_linux
-    fi
-
-    if [[ "$PLT" == "Darwin" ]]; then
-        build_libkrunfw_darwin
     fi
 }
 
@@ -80,6 +43,6 @@ release() {
     tar --zstd -cvf "$RELEASE_TAR" -C "$PREFIX" .
 }
 
-build_libkrunfw
+build_libkrunfw_linux
 repack_libkrunfw_source
 release

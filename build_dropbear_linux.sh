@@ -13,9 +13,8 @@ export RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
 
 dropbear_patch="$WORKSPACE/dropbear.diff"
 
-build_linux() {
+build_dropbear_linux() {
     cd "$WORKSPACE"
-    apk add gcc git musl-dev zlib-dev make bash tar zstd git
     git clone -b DROPBEAR_2025.89 https://github.com/mkj/dropbear.git "$SRC_DIR"
     cd "$SRC_DIR" 
     git apply "$dropbear_patch"
@@ -41,7 +40,7 @@ release() {
 }
 
 build() {
-    build_linux
+    build_dropbear_linux
 }
 
 build
