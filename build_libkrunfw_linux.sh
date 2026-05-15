@@ -1,18 +1,19 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 set -xe
 set -o pipefail
 
-export PLT=$(uname)
-export ARCH=$(uname -m)
+PLT="$(uname)"
+ARCH="$(uname -m)"
+PKG_NAME="libkrunfw"
 
-export WORKSPACE="$(pwd)"
+WORKSPACE="$(pwd)"
+LIBKRUNFW_SRC="$WORKSPACE/$PKG_NAME"
+PREFIX="$LIBKRUNFW_SRC/_install_"
 
-export LIBKRUNFW_SRC="$WORKSPACE/libkrunfw"
-export PREFIX="$LIBKRUNFW_SRC/_install_"
+SRC_ARCHIVE="$PKG_NAME-src-$PLT-$ARCH.tar.zst"
+RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
 
-export SRC_ARCHIVE="libkrunfw-src-$PLT-$ARCH.tar.zst"
-export RELEASE_TAR="libkrunfw-$PLT-$ARCH.tar.zst"
-export LIBKRUNFW_COMMIT="7d995aa487644fa0f57eb4f42fe730460f50087b"
+LIBKRUNFW_COMMIT="7d995aa487644fa0f57eb4f42fe730460f50087b"
 
 build_libkrunfw_linux() {
     git clone https://github.com/ihexon/libkrunfw.git "$LIBKRUNFW_SRC"

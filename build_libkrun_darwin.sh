@@ -1,20 +1,22 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 set -xe
 set -o pipefail
 
-export PLT=$(uname)
-export ARCH=$(uname -m)
-export WORKSPACE="$(pwd)"
-export LIBKRUN_SRC="$WORKSPACE/libkrun"
-export PREFIX="$LIBKRUN_SRC/_install_"
-export LIBEPOXY_PREFIX="$WORKSPACE/libepoxy/_install_"
-export VIRGLRENDERER_PREFIX="$WORKSPACE/virglrenderer/_install_"
-export LIBEPOXY_TAR="$WORKSPACE/libepoxy-Darwin-arm64.tar.zst"
-export VIRGLRENDERER_TAR="$WORKSPACE/virglrenderer-Darwin-arm64.tar.zst"
-export RELEASE_TAR="libkrun-$PLT-$ARCH.tar.zst"
-export LIBKRUN_COMMIT="391409d0335d67ab3c7e86dcd16ea8af70f231a0"
+PLT="$(uname)"
+ARCH="$(uname -m)"
+PKG_NAME="libkrun"
 
-export MOLTENVK_PREFIX="${MOLTENVK_PREFIX:-}"
+WORKSPACE="$(pwd)"
+LIBKRUN_SRC="$WORKSPACE/$PKG_NAME"
+PREFIX="$LIBKRUN_SRC/_install_"
+LIBEPOXY_PREFIX="$WORKSPACE/libepoxy/_install_"
+VIRGLRENDERER_PREFIX="$WORKSPACE/virglrenderer/_install_"
+LIBEPOXY_TAR="$WORKSPACE/libepoxy-Darwin-arm64.tar.zst"
+VIRGLRENDERER_TAR="$WORKSPACE/virglrenderer-Darwin-arm64.tar.zst"
+RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+
+LIBKRUN_COMMIT="391409d0335d67ab3c7e86dcd16ea8af70f231a0"
+MOLTENVK_PREFIX="${MOLTENVK_PREFIX:-}"
 
 checkout_libkrun() {
     git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC"

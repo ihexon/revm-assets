@@ -1,19 +1,20 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 set -xe
 set -o pipefail
 
-export PLT=$(uname)
-export ARCH=$(uname -m)
-export WORKSPACE="$(pwd)"
-export PKG_NAME="virglrenderer"
-export PREFIX="$WORKSPACE/$PKG_NAME/_install_"
-export LIBEPOXY_PREFIX="$WORKSPACE/libepoxy/_install_"
-export LIBEPOXY_TAR="$WORKSPACE/libepoxy-Darwin-arm64.tar.zst"
-export RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+PLT="$(uname)"
+ARCH="$(uname -m)"
+PKG_NAME="virglrenderer"
 
-export VIRGLRENDERER_VERSION="0.10.4e-krunkit"
-export VIRGLRENDERER_SHA256="09d000623fbdb966cb604eb48c962a0815e8142383e6066d6494809335b76dbb"
-export MOLTENVK_PREFIX="${MOLTENVK_PREFIX:-}"
+WORKSPACE="$(pwd)"
+PREFIX="$WORKSPACE/$PKG_NAME/_install_"
+LIBEPOXY_PREFIX="$WORKSPACE/libepoxy/_install_"
+LIBEPOXY_TAR="$WORKSPACE/libepoxy-Darwin-arm64.tar.zst"
+RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+
+VIRGLRENDERER_VERSION="0.10.4e-krunkit"
+VIRGLRENDERER_SHA256="09d000623fbdb966cb604eb48c962a0815e8142383e6066d6494809335b76dbb"
+MOLTENVK_PREFIX="${MOLTENVK_PREFIX:-}"
 
 download() {
     local url="$1"

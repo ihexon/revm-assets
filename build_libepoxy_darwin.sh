@@ -1,16 +1,17 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 set -xe
 set -o pipefail
 
-export PLT=$(uname)
-export ARCH=$(uname -m)
-export WORKSPACE="$(pwd)"
-export PKG_NAME="libepoxy"
-export PREFIX="$WORKSPACE/$PKG_NAME/_install_"
-export RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+PLT="$(uname)"
+ARCH="$(uname -m)"
+PKG_NAME="libepoxy"
 
-export LIBEPOXY_VERSION="1.5.10"
-export LIBEPOXY_SHA256="072cda4b59dd098bba8c2363a6247299db1fa89411dc221c8b81b8ee8192e623"
+WORKSPACE="$(pwd)"
+PREFIX="$WORKSPACE/$PKG_NAME/_install_"
+RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+
+LIBEPOXY_VERSION="1.5.10"
+LIBEPOXY_SHA256="072cda4b59dd098bba8c2363a6247299db1fa89411dc221c8b81b8ee8192e623"
 
 download() {
     local url="$1"

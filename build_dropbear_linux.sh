@@ -1,18 +1,19 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -xe
+set -o pipefail
 
-export PLT=$(uname)
-export ARCH=$(uname -m)
-export PKG_NAME="dropbear"
+PLT="$(uname)"
+ARCH="$(uname -m)"
+PKG_NAME="dropbear"
 
-export WORKSPACE="$(pwd)"
-export SRC_DIR="$WORKSPACE/$PKG_NAME"
-export PREFIX="$SRC_DIR/_install_"
+WORKSPACE="$(pwd)"
+SRC_DIR="$WORKSPACE/$PKG_NAME"
+PREFIX="$SRC_DIR/_install_"
 
-export RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
 
-export DROPBEAR_PATCH="$WORKSPACE/dropbear.diff"
-export DROPBEAR_PROGRAMS="dropbear dbclient dropbearkey dropbearconvert scp"
+DROPBEAR_PATCH="$WORKSPACE/dropbear.diff"
+DROPBEAR_PROGRAMS="dropbear dbclient dropbearkey dropbearconvert scp"
 
 build_dropbear_linux() {
     cd "$WORKSPACE"

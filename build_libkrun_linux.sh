@@ -1,14 +1,17 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 set -xe
 set -o pipefail
 
-export PLT=$(uname)
-export ARCH=$(uname -m)
-export WORKSPACE="$(pwd)"
-export LIBKRUN_SRC="$WORKSPACE/libkrun"
-export PREFIX="$LIBKRUN_SRC/_install_"
-export RELEASE_TAR="libkrun-$PLT-$ARCH.tar.zst"
-export LIBKRUN_COMMIT="391409d0335d67ab3c7e86dcd16ea8af70f231a0"
+PLT="$(uname)"
+ARCH="$(uname -m)"
+PKG_NAME="libkrun"
+
+WORKSPACE="$(pwd)"
+LIBKRUN_SRC="$WORKSPACE/$PKG_NAME"
+PREFIX="$LIBKRUN_SRC/_install_"
+RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+
+LIBKRUN_COMMIT="391409d0335d67ab3c7e86dcd16ea8af70f231a0"
 
 checkout_libkrun() {
     git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC"

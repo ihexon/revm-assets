@@ -1,20 +1,23 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 set -xe
-export PLT=$(uname)
-export ARCH=$(uname -m)
+set -o pipefail
 
-export WORKSPACE="$(pwd)"
-export SRC_DIR="$WORKSPACE/busybox"
-export PREFIX="$SRC_DIR/_install_"
+PLT="$(uname)"
+ARCH="$(uname -m)"
+PKG_NAME="busybox"
 
-export RELEASE_TAR="busybox-$PLT-$ARCH.tar.zst"
+WORKSPACE="$(pwd)"
+SRC_DIR="$WORKSPACE/$PKG_NAME"
+PREFIX="$SRC_DIR/_install_"
+
+RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
 
 case "$ARCH" in
     aarch64)
-        export BUSYBOX_DEB_URL="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/pool/main/b/busybox/busybox-static_1.37.0-4ubuntu1_arm64.deb"
+        BUSYBOX_DEB_URL="https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/pool/main/b/busybox/busybox-static_1.37.0-4ubuntu1_arm64.deb"
         ;;
     x86_64)
-        export BUSYBOX_DEB_URL="https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/main/b/busybox/busybox-static_1.36.1-6ubuntu3.1_amd64.deb"
+        BUSYBOX_DEB_URL="https://mirrors.tuna.tsinghua.edu.cn/ubuntu/pool/main/b/busybox/busybox-static_1.36.1-6ubuntu3.1_amd64.deb"
         ;;
     *)
         echo "unsupported arch: $ARCH" >&2

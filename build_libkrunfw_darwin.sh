@@ -1,17 +1,17 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 set -xe
 set -o pipefail
 
-export PLT=$(uname)
-export ARCH=$(uname -m)
+PLT="$(uname)"
+ARCH="$(uname -m)"
+PKG_NAME="libkrunfw"
 
-export WORKSPACE="$(pwd)"
+WORKSPACE="$(pwd)"
+LIBKRUNFW_SRC="$WORKSPACE/$PKG_NAME"
+PREFIX="$LIBKRUNFW_SRC/_install_"
 
-export LIBKRUNFW_SRC="$WORKSPACE/libkrunfw"
-export PREFIX="$LIBKRUNFW_SRC/_install_"
-
-export RELEASE_TAR="libkrunfw-$PLT-$ARCH.tar.zst"
-export SRC_ARCHIVE="libkrunfw-src-Linux-aarch64.tar.zst"
+RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
+SRC_ARCHIVE="$PKG_NAME-src-Linux-aarch64.tar.zst"
 
 build_libkrunfw_darwin() {
     cd "$WORKSPACE"
