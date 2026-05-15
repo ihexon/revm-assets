@@ -103,10 +103,8 @@ jobs:
           docker run --rm \
             --workdir "$GITHUB_WORKSPACE" \
             -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" \
-            --user "$(id -u):$(id -g)" \
-            -e HOME="$GITHUB_WORKSPACE/.home" \
             "$LINUX_BUILDER_IMAGE" \
-            sh -c 'mkdir -p "$HOME" && ./build_libkrun_linux.sh'
+            ./build_libkrun_linux.sh
 
       - uses: actions/upload-artifact@v4
         with:
@@ -135,10 +133,8 @@ jobs:
           docker run --rm \
             --workdir "$GITHUB_WORKSPACE" \
             -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" \
-            --user "$(id -u):$(id -g)" \
-            -e HOME="$GITHUB_WORKSPACE/.home" \
             "$LINUX_BUILDER_IMAGE" \
-            sh -c 'mkdir -p "$HOME" && ./build_libkrunfw_linux.sh'
+            ./build_libkrunfw_linux.sh
 
       - uses: actions/upload-artifact@v4
         if: matrix.arch == 'aarch64'
@@ -197,10 +193,8 @@ jobs:
           docker run --rm \
             --workdir "$GITHUB_WORKSPACE" \
             -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" \
-            --user "$(id -u):$(id -g)" \
-            -e HOME="$GITHUB_WORKSPACE/.home" \
             "$LINUX_BUILDER_IMAGE" \
-            sh -c 'mkdir -p "$HOME" && ./build_busybox_linux.sh'
+            ./build_busybox_linux.sh
 
       - uses: actions/upload-artifact@v4
         with:
@@ -229,10 +223,8 @@ jobs:
           docker run --rm \
             --workdir "$GITHUB_WORKSPACE" \
             -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" \
-            --user "$(id -u):$(id -g)" \
-            -e HOME="$GITHUB_WORKSPACE/.home" \
             "$DROPBEAR_BUILDER_IMAGE" \
-            sh -c 'mkdir -p "$HOME" && ./build_dropbear_linux.sh'
+            ./build_dropbear_linux.sh
 
       - uses: actions/upload-artifact@v4
         with:
