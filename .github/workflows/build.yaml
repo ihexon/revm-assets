@@ -52,62 +52,16 @@ jobs:
           compression-level: 0
           overwrite: true
 
-  build_libepoxy_darwin:
-    name: build libepoxy (Darwin arm64)
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
-      - run: ./build_libepoxy_darwin.sh
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: libepoxy-Darwin-arm64.tar.zst
-          path: libepoxy-Darwin-arm64.tar.zst
-          retention-days: 1
-          compression-level: 0
-          overwrite: true
-
-  build_virglrenderer_darwin:
-    name: build virglrenderer (Darwin arm64)
-    needs: build_libepoxy_darwin
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: libepoxy-Darwin-arm64.tar.zst
-
-      - run: ./build_virglrenderer_darwin.sh
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: virglrenderer-Darwin-arm64.tar.zst
-          path: virglrenderer-Darwin-arm64.tar.zst
-          retention-days: 1
-          compression-level: 0
-          overwrite: true
-
   build_libkrun_darwin:
     name: build libkrun (Darwin arm64)
-    needs:
-      - build_libepoxy_darwin
-      - build_virglrenderer_darwin
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: libepoxy-Darwin-arm64.tar.zst
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: virglrenderer-Darwin-arm64.tar.zst
-
       - name: Install Rust nightly
         run: |
           rustup toolchain install nightly --profile minimal
+      - run: ./build_libepoxy_darwin.sh
+      - run: ./build_virglrenderer_darwin.sh
       - run: ./build_libkrun_darwin.sh
       - name: Verify static libkrun bundle
         run: |
@@ -295,12 +249,10 @@ jobs:
       - build_alpine_rootfs_linux
       - build_busybox_linux
       - build_dropbear_linux
-      - build_libepoxy_darwin
       - build_libkrun_darwin
       - build_libkrun_linux
       - build_libkrunfw_darwin
       - build_libkrunfw_linux
-      - build_virglrenderer_darwin
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -310,9 +262,7 @@ jobs:
           path: artifacts
           merge-multiple: true
       - run: |
-          rm -f artifacts/libepoxy-Darwin-arm64.tar.zst
           rm -f artifacts/libkrunfw-src-Linux-aarch64.tar.zst
-          rm -f artifacts/virglrenderer-Darwin-arm64.tar.zst
           ls -la artifacts/
 
       - uses: softprops/action-gh-release@v2
