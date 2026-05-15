@@ -63,6 +63,9 @@ jobs:
         run: |
           tar --zstd -tf libkrun-Darwin-arm64.tar.zst | sort > contents.txt
           grep -Fx ./lib/libkrun.a contents.txt
+          grep -Fx ./lib/libkrun.dylib contents.txt
+          grep -Fx ./lib/libkrun.1.dylib contents.txt
+          grep -Fx ./lib/libkrun.1.18.0.dylib contents.txt
           grep -Fx ./lib/libvirglrenderer.a contents.txt
           grep -Fx ./lib/libepoxy.a contents.txt
           grep -Fx ./lib/libMoltenVK.a contents.txt

@@ -144,18 +144,15 @@ build_libkrun_darwin() {
     export CPATH="$LIBKRUN_DEPS_PREFIX/include:$MOLTENVK_PREFIX/libexec/include${CPATH:+:$CPATH}"
 
     cd "$LIBKRUN_SRC"
-    set_libkrun_crate_type '"staticlib"'
+    set_libkrun_crate_type '"cdylib", "staticlib", "lib"'
     make clean
-    TIMESYNC=1 cargo build --release --features blk --features net --features gpu
+    TIMESYNC=1 make PREFIX="$PREFIX" BLK=1 NET=1 GPU=1
+    TIMESYNC=1 make PREFIX="$PREFIX" BLK=1 NET=1 GPU=1 install
 
-    rm -rf "$PREFIX"
-    install -d "$PREFIX/lib" "$PREFIX/include" "$PREFIX/lib/pkgconfig"
+    rm -rf "$PREFIX/lib/pkgconfig"
     install -m 644 target/release/libkrun.a "$PREFIX/lib/"
-    install -m 644 include/libkrun.h include/libkrun_display.h include/libkrun_input.h "$PREFIX/include/"
     install -m 644 "$LIBKRUN_DEPS_PREFIX/lib/libvirglrenderer.a" "$LIBKRUN_DEPS_PREFIX/lib/libepoxy.a" "$PREFIX/lib/"
     install -m 644 "$MOLTENVK_PREFIX/lib/libMoltenVK.a" "$MOLTENVK_PREFIX/libexec/lib/libSPIRVCross.a" "$MOLTENVK_PREFIX/libexec/lib/libSPIRVTools.a" "$PREFIX/lib/"
-    install -m 644 "$LIBKRUN_DEPS_PREFIX/lib/pkgconfig/virglrenderer.pc" "$LIBKRUN_DEPS_PREFIX/lib/pkgconfig/epoxy.pc" "$PREFIX/lib/pkgconfig/"
-    perl -0pi -e "s|$MOLTENVK_PREFIX/lib/libMoltenVK\\.a|\\\${libdir}/libMoltenVK.a|g; s|$MOLTENVK_PREFIX/libexec/lib/libSPIRVCross\\.a|\\\${libdir}/libSPIRVCross.a|g; s|$MOLTENVK_PREFIX/libexec/lib/libSPIRVTools\\.a|\\\${libdir}/libSPIRVTools.a|g" "$PREFIX/lib/pkgconfig/virglrenderer.pc"
 }
 
 build_libkrun_linux() {
