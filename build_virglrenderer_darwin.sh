@@ -8,6 +8,7 @@ export WORKSPACE="$(pwd)"
 export PKG_NAME="virglrenderer"
 export PREFIX="$WORKSPACE/$PKG_NAME/_install_"
 export LIBEPOXY_PREFIX="$WORKSPACE/libepoxy/_install_"
+export LIBEPOXY_TAR="$WORKSPACE/libepoxy-Darwin-arm64.tar.zst"
 export RELEASE_TAR="$PKG_NAME-$PLT-$ARCH.tar.zst"
 
 export VIRGLRENDERER_VERSION="0.10.4e-krunkit"
@@ -36,14 +37,14 @@ verify_sha256() {
 }
 
 unpack_libepoxy_darwin() {
-    if [[ ! -f libepoxy-Darwin-arm64.tar.zst ]]; then
-        echo "prebuild libepoxy-Darwin-arm64.tar.zst not find, please download it"
+    if [[ ! -f "$LIBEPOXY_TAR" ]]; then
+        echo "prebuilt $LIBEPOXY_TAR not found" >&2
         exit 100
     fi
 
     rm -rf "$LIBEPOXY_PREFIX"
     mkdir -p "$LIBEPOXY_PREFIX"
-    tar --zstd -xf libepoxy-Darwin-arm64.tar.zst -C "$LIBEPOXY_PREFIX"
+    tar --zstd -xf "$LIBEPOXY_TAR" -C "$LIBEPOXY_PREFIX"
 }
 
 build_virglrenderer_darwin() {

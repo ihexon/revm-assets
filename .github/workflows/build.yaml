@@ -28,7 +28,6 @@ jobs:
   build_alpine_rootfs_linux:
     name: build alpine rootfs (${{ matrix.arch }})
     strategy:
-      fail-fast: true
       matrix:
         include:
           - os: ubuntu-22.04
@@ -87,7 +86,6 @@ jobs:
   build_libkrun_linux:
     name: build libkrun (Linux ${{ matrix.arch }})
     strategy:
-      fail-fast: true
       matrix:
         include:
           - os: ubuntu-22.04
@@ -117,7 +115,6 @@ jobs:
   build_libkrunfw_linux:
     name: build libkrunfw (Linux ${{ matrix.arch }})
     strategy:
-      fail-fast: true
       matrix:
         include:
           - os: ubuntu-22.04
@@ -177,7 +174,6 @@ jobs:
   build_busybox_linux:
     name: build busybox (Linux ${{ matrix.arch }})
     strategy:
-      fail-fast: true
       matrix:
         include:
           - os: ubuntu-22.04
@@ -207,7 +203,6 @@ jobs:
   build_dropbear_linux:
     name: build dropbear (Linux ${{ matrix.arch }})
     strategy:
-      fail-fast: true
       matrix:
         include:
           - os: ubuntu-22.04

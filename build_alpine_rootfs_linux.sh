@@ -28,9 +28,5 @@ release() {
     docker rm "$PKG_NAME"
 }
 
-build() {
-    build_alpine_rootfs_linux
-}
-
-build
+build_alpine_rootfs_linux
 release

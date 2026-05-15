@@ -4,10 +4,20 @@
 .vscode/
 
 # Build artifacts
-busybox-*/
+/*.tar.zst
 *.tar.bz2
 *.tar.gz
 *.zip
+/alpine-rootfs/
+/build/
+/busybox/
+/distfiles/
+/dropbear/
+/libepoxy/
+/libkrun/
+/libkrunfw/
+/virglrenderer/
+/contents.txt
 
 # Compiled binaries
 *.o
@@ -26,6 +36,3 @@ Thumbs.db
 # Logs
 *.log
 CLAUDE.md
-
-libkrunfw
-libkrun

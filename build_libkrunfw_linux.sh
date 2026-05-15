@@ -12,13 +12,11 @@ export PREFIX="$LIBKRUNFW_SRC/_install_"
 
 export SRC_ARCHIVE="libkrunfw-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrunfw-$PLT-$ARCH.tar.zst"
-export commit_id="7d995aa487644fa0f57eb4f42fe730460f50087b"
-export http_proxy=$http_proxy
-export https_proxy=$http_proxy
+export LIBKRUNFW_COMMIT="7d995aa487644fa0f57eb4f42fe730460f50087b"
 
 build_libkrunfw_linux() {
     git clone https://github.com/ihexon/libkrunfw.git "$LIBKRUNFW_SRC"
-    cd "$LIBKRUNFW_SRC" && git checkout "$commit_id"
+    cd "$LIBKRUNFW_SRC" && git checkout "$LIBKRUNFW_COMMIT"
 
     cp -av "$WORKSPACE/config-libkrunfw_aarch64" "$LIBKRUNFW_SRC/config-libkrunfw_aarch64"
     cp -av "$WORKSPACE/config-libkrunfw_x86_64" "$LIBKRUNFW_SRC/config-libkrunfw_x86_64"

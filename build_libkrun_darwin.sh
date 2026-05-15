@@ -11,14 +11,15 @@ export LIBEPOXY_PREFIX="$WORKSPACE/libepoxy/_install_"
 export VIRGLRENDERER_PREFIX="$WORKSPACE/virglrenderer/_install_"
 export LIBEPOXY_TAR="$WORKSPACE/libepoxy-Darwin-arm64.tar.zst"
 export VIRGLRENDERER_TAR="$WORKSPACE/virglrenderer-Darwin-arm64.tar.zst"
-export SRC_ARCHIVE="libkrun-src-$PLT-$ARCH.tar.zst"
 export RELEASE_TAR="libkrun-$PLT-$ARCH.tar.zst"
-export commit_id="391409d0335d67ab3c7e86dcd16ea8af70f231a0"
+export LIBKRUN_COMMIT="391409d0335d67ab3c7e86dcd16ea8af70f231a0"
 
 export MOLTENVK_PREFIX="${MOLTENVK_PREFIX:-}"
 
-git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC"
-cd "$LIBKRUN_SRC" && git checkout "$commit_id"
+checkout_libkrun() {
+    git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC"
+    cd "$LIBKRUN_SRC" && git checkout "$LIBKRUN_COMMIT"
+}
 
 set_libkrun_crate_type() {
     cd "$LIBKRUN_SRC"
@@ -28,12 +29,12 @@ set_libkrun_crate_type() {
 
 unpack_static_deps_darwin() {
     if [[ ! -f "$LIBEPOXY_TAR" ]]; then
-        echo "prebuild libepoxy-Darwin-arm64.tar.zst not find, please download it"
+        echo "prebuilt $LIBEPOXY_TAR not found" >&2
         exit 100
     fi
 
     if [[ ! -f "$VIRGLRENDERER_TAR" ]]; then
-        echo "prebuild virglrenderer-Darwin-arm64.tar.zst not find, please download it"
+        echo "prebuilt $VIRGLRENDERER_TAR not found" >&2
         exit 100
     fi
 
@@ -75,15 +76,10 @@ build_libkrun_darwin() {
     install -m 644 "$MOLTENVK_PREFIX/lib/libMoltenVK.a" "$MOLTENVK_PREFIX/libexec/lib/libSPIRVCross.a" "$MOLTENVK_PREFIX/libexec/lib/libSPIRVTools.a" "$PREFIX/lib/"
 }
 
-repack_libkrun_source() {
-    cd "$WORKSPACE"
-    tar --zstd -cf "$SRC_ARCHIVE" -C "$(dirname "$LIBKRUN_SRC")" "$(basename "$LIBKRUN_SRC")"
-}
-
 release() {
     tar --zstd -cvf "$RELEASE_TAR" -C "$PREFIX" .
 }
 
+checkout_libkrun
 build_libkrun_darwin
-repack_libkrun_source
 release
