@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     bison \
     ca-certificates \
     clang \
+    cpio \
     curl \
     elfutils \
     flex \
