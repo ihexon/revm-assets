@@ -11,7 +11,7 @@ LIBKRUN_SRC="$WORKSPACE/$PKG_NAME"
 PREFIX="$LIBKRUN_SRC/_install_"
 RELEASE_TAR="$WORKSPACE/$PKG_NAME-$PLT-$ARCH.tar.zst"
 
-LIBKRUN_COMMIT="391409d0335d67ab3c7e86dcd16ea8af70f231a0"
+LIBKRUN_COMMIT="0ecf4d5f791afcc7c964e3f4f729f77ee00761c0"
 
 checkout_libkrun() {
     git clone https://github.com/ihexon/libkrun.git "$LIBKRUN_SRC"
